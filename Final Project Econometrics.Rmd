@@ -1,0 +1,94 @@
+---
+title: "Final Project"
+author: "Alejandro Sanchez"
+date: "12/18/2020"
+output: html_document
+---
+
+
+```{R}
+load("C:/Users/alejo/Desktop/beer_iv_data.RData")
+attach(beer_iv_dat)
+```
+
+```{R}
+library(psych)
+describe(beer_iv_dat)
+```
+
+
+```{R}
+Model1 <- lm(growth_rates ~ beer_pc)
+summary(Model1)
+```
+
+```{r}
+library(car)
+scatterplot(growth_rates ~ beer_pc, data = beer_iv_dat,)
+```
+
+
+```{R}
+require(stargazer)
+stargazer(Model1, type = "text")
+```
+
+
+```{R}
+model2 <- lm(growth_rates ~ beertax + spirits_tax)
+summary(model2)
+```
+
+```{R}
+require(stargazer)
+stargazer(model2, type = "text")
+```
+
+```{R}
+model3 <- lm(beer_pc ~ beertax + gdp_pc)
+summary(model3)
+```
+
+```{R}
+require(stargazer)
+stargazer(model3, type = "text")
+```
+```{R}
+model4 <- lm(spirits_pc ~ spirits_tax + gdp_pc + growth_rates)
+summary(model4)
+```
+```{R}
+require(stargazer)
+stargazer(model4, type = "text")
+```
+
+```{r}
+model5 <- lm(gdp_pc~ beer_pc + spirits_pc + wine_pc +beertax + spirits_tax +beer_L+ spirits_L + wine_L)
+summary(model5)
+```
+```{R}
+require(stargazer)
+stargazer(model5, type = "text")
+```
+
+```{R}
+library(GGally)
+ggcorr(beer_iv_dat)
+```
+
+```{R}
+model6 <- lm(beertax ~ as.factor(st_fixedeff), data = beer_iv_dat)
+summary(model6)
+```
+```{R}
+model7 <- lm(beer_pc ~ beertax + beer_L + spirits_L + wine_L, data = beer_iv_dat)
+summary(model7)
+pred_beer1 <- predict(model7)
+pred_beer2 <- c(rep(999999,51),pred_beer1)
+is.na(pred_beer2) <- (pred_beer2 == 999999)
+
+model8 <- lm(growth_rates ~ pred_beer2 + beer_L + spirits_L + wine_L + gdp_L + as.factor(st_fixedeff), data = beer_iv_dat)
+summary(model8)
+```
+
+
